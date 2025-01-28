@@ -49,3 +49,18 @@ class AssignmentGradeSchema(Schema):
     def initiate_class(self, data_dict, many, partial):
         # pylint: disable=unused-argument,no-self-use
         return GeneralObject(**data_dict)
+
+
+
+class TeacherSchema(Schema):
+    class Meta:
+        unknown = EXCLUDE  # Ignore fields that are not part of the schema
+
+    id = fields.Integer(dump_only=True)
+    user_id = fields.Integer()
+    created_at = fields.DateTime()
+    updated_at = fields.DateTime()
+
+    @post_load
+    def initiate_class(self, data_dict, many, partial):
+        return GeneralObject(**data_dict)

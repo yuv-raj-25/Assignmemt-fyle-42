@@ -3,6 +3,8 @@ from core import db
 from core.apis import decorators
 from core.apis.responses import APIResponse
 from core.models.assignments import Assignment
+from core.models.teachers import Teacher
+from core.apis.teachers.schema import TeacherSchema
 
 from .schema import AssignmentSchema, AssignmentGradeSchema
 principal_assignments_resources = Blueprint('principal_assignments_resources', __name__)
@@ -32,3 +34,14 @@ def grade_assignment(p, incoming_payload):
     db.session.commit()
     graded_assignment_dump = AssignmentSchema().dump(graded_assignment)
     return APIResponse.respond(data=graded_assignment_dump)
+
+
+@principal_assignments_resources.route('/teachers', methods=['GET'], strict_slashes=False)
+@decorators.authenticate_principal
+def list_teachers(p):
+    """Returns list of teachers for the principal"""
+    # Query all teachers assigned to this principal (you might want to adjust this to suit your model structure)
+    teachers = Teacher.query.all()  # Adjust the query to match your models
+    teachers_dump = TeacherSchema().dump(teachers, many=True)  # Use your schema for serializing teacher data
+    return APIResponse.respond(data=teachers_dump)
+
